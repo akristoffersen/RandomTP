@@ -24,7 +24,7 @@ public class RandomTPAPI {
 
     public static void randomTeleport(ServerPlayer p, ServerLevel world) {
         try  {
-            Random r = new Random();
+            Random r = new Random(12345); // deterministic
             int lowX = ((int)Math.round(Math.abs(p.getX())) + Config.getMinDistance()) * -1;
             int highX = Math.abs((int)Math.round(p.getX()) + Config.getMaxDistance());
             int lowZ = ((int)Math.round(Math.abs(p.getZ())) + Config.getMinDistance()) * -1;
