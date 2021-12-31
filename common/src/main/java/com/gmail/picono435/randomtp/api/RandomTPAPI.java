@@ -20,7 +20,18 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.Map;
 import java.util.Random;
 
-import FileHelper;
+// import com.gmail.picono435.randomtp.FileHelper;
+
+// import java.io.File;
+
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
+
 
 public class RandomTPAPI {
 
@@ -59,11 +70,22 @@ public class RandomTPAPI {
 
             String str_output = "X: " + String.valueOf(x) + " Y: " + String.valueOf(y) + " Z: " + String.valueOf(z);
             String filename = "teleport.log";
-            if (!writeToFile(filename, str_output, true)) {
-                // this means the file doesn't exist.
-                createFile(filename);
-                writeToFile(filename, str_output, true);
-            }
+
+            Path file = Paths.get(filename);
+
+            // // If file doesn't exists, then create it
+            // if (!file.exists()) {
+            //     file.createNewFile();
+            // }
+
+            List<String> lines = Arrays.asList(str_output);
+            Files.write(file, lines, StandardCharsets.UTF_8);
+
+            // if (!writeToFile(filename, str_output, true)) {
+            //     // this means the file doesn't exist.
+            //     createFile(filename);
+            //     writeToFile(filename, str_output, true);
+            // }
 
             p.teleportTo(world, x, y, z, p.getXRot(), p.getYRot());
             
