@@ -20,6 +20,8 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.Map;
 import java.util.Random;
 
+import FileHelper;
+
 public class RandomTPAPI {
 
     public static void randomTeleport(ServerPlayer p, ServerLevel world) {
@@ -55,7 +57,16 @@ public class RandomTPAPI {
                 }
             }
 
+            String str_output = "X: " + String.valueOf(x) + " Y: " + String.valueOf(y) + " Z: " + String.valueOf(z);
+            String filename = "teleport.log";
+            if (!writeToFile(filename, str_output, true)) {
+                // this means the file doesn't exist.
+                createFile(filename);
+                writeToFile(filename, str_output, true);
+            }
+
             p.teleportTo(world, x, y, z, p.getXRot(), p.getYRot());
+            
             TextComponent successful = new TextComponent(Messages.getSuccessful().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
             p.sendMessage(successful, p.getUUID());
         } catch(Exception ex) {
@@ -135,5 +146,11 @@ public class RandomTPAPI {
 
     public static Block[] getDangerBlocks() {
         return new Block[] {Blocks.LAVA, Blocks.WATER, Blocks.AIR};
+    }
+
+    // read write
+
+    public static void writeToFile(ServerPlayer p, ServerLevel world) {
+        return;
     }
 }
