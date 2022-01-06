@@ -16,15 +16,40 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+// import net.minecraft.world.biome.Biome;
+// import net.minecraftforge.fml.common.registry;
+
+// import net.minecraft.util;
+// import net.minecraft.util.Util;
+// import net.minecraft.world.biome.Biome;
+// import net.minecraft.init.Biomes;
+
+import net.minecraft.world.level.biome.Biome;
+
 
 import java.util.Map;
 import java.util.Random;
+
+// import com.gmail.picono435.randomtp.FileHelper;
+
+// import java.io.File;
+
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.List;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
+
 
 public class RandomTPAPI {
 
     public static void randomTeleport(ServerPlayer p, ServerLevel world) {
         try  {
-            Random r = new Random();
+            Random r = new Random(12345); // deterministic
+
             int lowX = ((int)Math.round(Math.abs(p.getX())) + Config.getMinDistance()) * -1;
             int highX = Math.abs((int)Math.round(p.getX()) + Config.getMaxDistance());
             int lowZ = ((int)Math.round(Math.abs(p.getZ())) + Config.getMinDistance()) * -1;
@@ -56,6 +81,21 @@ public class RandomTPAPI {
             }
 
             p.teleportTo(world, x, y, z, p.getXRot(), p.getYRot());
+
+            // logging
+            Biome biome = world.getBiome(p.blockPosition());
+            String biomeName = biome.toString();
+
+
+            String str_output = "X: " + String.valueOf(x) + " Y: " + String.valueOf(y) + " Z: " + String.valueOf(z) + " Biome: " + biomeName + "\n";
+            String filename = "teleport.log";
+
+            Path file = Paths.get(filename);
+
+            // List<String> lines = Arrays.asList(str_output);
+            Files.write(file, str_output.getBytes(), StandardOpenOption.APPEND);
+
+
             TextComponent successful = new TextComponent(Messages.getSuccessful().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
             p.sendMessage(successful, p.getUUID());
         } catch(Exception ex) {
